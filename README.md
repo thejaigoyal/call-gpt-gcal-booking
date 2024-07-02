@@ -289,3 +289,11 @@ Import your secrets from your .env file to your deployed app:
 ```bash
 fly secrets import < .env
 ```
+
+add your google apis keys json file on root:
+```bash
+touch keys.json
+```
+
+add your json in this file
+
