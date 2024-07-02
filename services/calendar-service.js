@@ -1,9 +1,9 @@
-const { google } = require("googleapis");
-const moment = require("moment");
+const { google } = require('googleapis');
+const moment = require('moment');
 
 // Load the service account key JSON file
-const KEYFILEPATH = "./keys.json";
-const SCOPES = ["https://www.googleapis.com/auth/calendar"];
+const KEYFILEPATH = './keys.json';
+const SCOPES = ['https://www.googleapis.com/auth/calendar'];
 
 // Create a JWT client
 const auth = new google.auth.GoogleAuth({
@@ -12,9 +12,9 @@ const auth = new google.auth.GoogleAuth({
 });
 
 // Leaving calendar ID here it should give you a public view of calendar
-const calendarId = "57a23d6a816a56a71ba0eee7f9815476fde5d4f7f3faf2f6f42ac0c182fa1d9a@group.calendar.google.com";
+const calendarId = '57a23d6a816a56a71ba0eee7f9815476fde5d4f7f3faf2f6f42ac0c182fa1d9a@group.calendar.google.com';
 
-const calendar = google.calendar({ version: "v3", auth });
+const calendar = google.calendar({ version: 'v3', auth });
 
 const getAvailableTimeSlots = async () => {
   const startDateTime = new Date();
@@ -62,9 +62,9 @@ const getAvailableTimeSlots = async () => {
       if (!isBusy) {
         availableSlots.push({
           startTS: moment(currentTime).toISOString(),
-          startTime: moment(currentTime).format("hh:mm A"),
+          startTime: moment(currentTime).format('hh:mm A'),
           endTS: moment(nextTime).toISOString(),
-          endTime: moment(nextTime).format("hh:mm A"),
+          endTime: moment(nextTime).format('hh:mm A'),
         });
       }
 
@@ -73,18 +73,18 @@ const getAvailableTimeSlots = async () => {
 
     return availableSlots;
   } catch (err) {
-    console.error("Error fetching available time slots:", err);
+    console.error('Error fetching available time slots:', err);
   }
 };
 
 function bookTimeSlot(time, name) {
   // will add email later to send invite to person as well
-  let [hour, _minute] = time.split(":");
-  let [minute, timeOfDay] = _minute.split(" ");
-  const calendar = google.calendar({ version: "v3", auth });
+  let [hour, _minute] = time.split(':');
+  let [minute, timeOfDay] = _minute.split(' ');
+  const calendar = google.calendar({ version: 'v3', auth });
   
   hour = timeOfDay.includes('AM') ? hour :  parseInt(hour) + 12, 
-  minute= minute.split(" ")[0];
+  minute= minute.split(' ')[0];
 
   console.log(hour, minute);
 
@@ -92,26 +92,26 @@ function bookTimeSlot(time, name) {
     .set({ hour, minute })
     .toDate();
   const appointmentEndTime = moment(appointmentStartTime)
-    .add(30, "minutes")
+    .add(30, 'minutes')
     .toDate();
 
   const event = {
     summary: `Appointment with Client ${name}`,
-    location: "123 Main St, Anytown, USA",
-    description: "Discuss project details and next steps.",
+    location: '123 Main St, Anytown, USA',
+    description: 'Discuss project details and next steps.',
     start: {
       dateTime: appointmentStartTime.toISOString(),
-      timeZone: "Asia/Kolkata",
+      timeZone: 'Asia/Kolkata',
     },
     end: {
       dateTime: appointmentEndTime.toISOString(),
-      timeZone: "Asia/Kolkata",
+      timeZone: 'Asia/Kolkata',
     },
     reminders: {
       useDefault: false,
       overrides: [
-        { method: "email", minutes: 24 * 60 }, // 1 day before
-        { method: "popup", minutes: 10 }, // 10 minutes before
+        { method: 'email', minutes: 24 * 60 }, // 1 day before
+        { method: 'popup', minutes: 10 }, // 10 minutes before
       ],
     },
   };
@@ -124,12 +124,12 @@ function bookTimeSlot(time, name) {
     (err, event) => {
       if (err) {
         console.error(
-          "There was an error contacting the Calendar service:",
+          'There was an error contacting the Calendar service:',
           err
         );
         return;
       }
-      console.log("Event created: %s", event.data.htmlLink);
+      console.log('Event created: %s', event.data.htmlLink);
     }
   );
 
